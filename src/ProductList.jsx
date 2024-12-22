@@ -1,9 +1,29 @@
 import React, { useState,useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { useDispatch } from 'react-redux';
+import { addItem } from './CartSlice';
+
+
+
 function ProductList() {
     const [showCart, setShowCart] = useState(false); 
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [cartItems, setCartItems] = useState([]); // State to track items added to cart
+    const [addedToCart, setAddedToCart] = useState({}); // State to track which items added to cart
+
+    const dispatch = useDispatch(); // Hook to get the dispatch function from the Redux store
+
+
+   // Function to add an item to the cart
+  const handleAddToCart = (plant) => {
+    dispatch(addItem(plant)); // Dispatch addItem to Redux store
+    setAddedToCart(prevState => ({
+      ...prevState,
+      [plant.name]: true // Mark the plant as added to cart
+    }));
+  };
+
 
     const plantsArray = [
         {
@@ -278,7 +298,12 @@ const handlePlantsClick = (e) => {
                             <div className="product-title">{plant.name}</div>
                             <div className="product-description">{plant.description}</div>
                             <div className="product-price">{plant.cost}</div>
-                            <button className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                            <button className="product-button" 
+                            onClick={() => handleAddToCart(plant)}
+                            disabled={addedToCart[plant.name]}
+                            >
+                             {addedToCart[plant.name] ? 'Added' : 'Add to Cart'}
+                            </button>
                         </div>
                     ))}
                 </div>
