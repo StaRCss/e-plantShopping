@@ -1,9 +1,10 @@
-import React from 'react';
+import React , { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
-const CartItem = ({ onContinueShopping }) => {
+
+  const CartItem = ({onContinue}) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
@@ -22,10 +23,14 @@ const CartItem = ({ onContinueShopping }) => {
     return (itemCost * item.quantity).toFixed(2);  // Return total for this item with two decimal places
   };
 
-  // Handler for continue shopping
-  const handleContinueShopping = (e) => {
-    onContinueShopping();  // Call the function passed from the parent
-  };
+const handleContinueShopping = () => {
+ onContinue();
+  if (typeof onContinue === 'function') {
+      onContinue();                                   // Test to see if function passed is passed as a prop
+    } else {
+      console.warn('onContinue is not a function!');
+    }
+};
 
   const handleCheckoutShopping = (e) => {
   alert('Functionality to be added for future reference');
@@ -48,8 +53,10 @@ const CartItem = ({ onContinueShopping }) => {
     dispatch(removeItem(item.name));
   };
 
+
   return (
     <div className="cart-container">
+    
       <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
       <div>
         {cart.map(item => (
@@ -71,10 +78,10 @@ const CartItem = ({ onContinueShopping }) => {
       </div>
       <div style={{ marginTop: '20px', color: 'black' }} className='total_cart_amount'></div>
       <div className="continue_shopping_btn">
-        <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
+        <button className="get-started-button" onClick={handleContinueShopping}>Continue Shopping</button>
         <br />
     <button className="get-started-button1" onClick={handleCheckoutShopping}>Checkout</button>
-  </div>
+  </div>  
     </div>
   );
 };
